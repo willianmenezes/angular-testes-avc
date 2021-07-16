@@ -24,7 +24,7 @@ describe(PhotoFrameComponent.name, () => {
     expect(component).toBeTruthy();
   });
 
-  it(`#${PhotoFrameComponent.prototype.like.name} Should trigger (@Output liked) onde when called multiple times within debounce time`, fakeAsync(() => {
+  it(`#${PhotoFrameComponent.prototype.like.name} Should trigger (@Output liked) once when called multiple times within debounce time`, fakeAsync(() => {
     fixture.detectChanges();
     let times = 0;
     component.liked.subscribe(() => {
@@ -48,4 +48,12 @@ describe(PhotoFrameComponent.name, () => {
     tick(500);
     expect(times).toBe(2);
   }));
+
+  it(`Should display number of likes when (@Input likes) is incremented`, () => {
+    fixture.detectChanges();
+    component.likes++;
+    fixture.detectChanges();
+    const element: HTMLElement = fixture.nativeElement.querySelector('.like-counter');
+    expect(element.textContent.trim()).toBe('1');
+  });
 });
