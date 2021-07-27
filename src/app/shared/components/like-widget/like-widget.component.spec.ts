@@ -1,4 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { count } from 'rxjs/operators';
 import { LikeWidgetComponent } from './like-widget.component';
 import { LikeWidgetModule } from './like-widget.module';
 
@@ -33,9 +34,24 @@ describe(LikeWidgetComponent.name, () => {
 
   it(`#${LikeWidgetComponent.prototype.like.name}
     should trigger (@Output liked) when called`, () => {
-      spyOn(component.liked, 'emit');
+    spyOn(component.liked, 'emit');
+    fixture.detectChanges();
+    component.like();
+    expect(component.liked.emit).toHaveBeenCalled();
+  });
+
+  it(`(D) Should display number of likes when clicked`, (done) => {
+    fixture.detectChanges();
+    component.liked.subscribe(() => {
+      component.likes++;
       fixture.detectChanges();
-      component.like();
-      expect(component.liked.emit).toHaveBeenCalled();
+      const counterEl: HTMLElement = fixture.nativeElement.querySelector('.like-counter');
+      expect(counterEl.textContent.trim()).toBe('1');
+      done();
+    });
+
+    const likeWidgetContainerEl: HTMLElement = fixture.nativeElement.querySelector('.like-widget-container');
+
+    likeWidgetContainerEl.click();
   });
 });
